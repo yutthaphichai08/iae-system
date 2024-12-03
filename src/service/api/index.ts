@@ -37,9 +37,29 @@ const Update = async (id: number, updatedData: { type: string; name: string; amo
   return res; // ส่งข้อมูลที่ถูกอัพเดตกลับ
 };
 
+// ฟังก์ชันที่ใช้ลบข้อมูล
+const Delete = async (id: number) => {
+  const url = `http://localhost:3000/api/${PATH_NAME}/${id}`;
+
+  const response = await fetch(url, {
+    method: "DELETE", // ใช้ DELETE method เพื่อลบข้อมูล
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  // ไม่มีข้อมูลที่ต้องรับกลับเมื่อทำการลบ
+  return { message: "Transaction deleted successfully" };
+};
+
 const Transection = {
   getAll,
   Update, 
+  Delete, 
 };
 
 export default Transection;

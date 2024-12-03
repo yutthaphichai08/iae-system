@@ -1,7 +1,8 @@
-"use client";
+"use client"; 
 
 import React, { useEffect, useState } from "react";
 import Transection from "@/service/api";
+import DeleteModal from "./DeleteModal";
 
 interface ITransaction {
   id: number;
@@ -19,7 +20,9 @@ export default function TransactionList() {
   const [tranData, setTranData] = useState<ITransaction[]>([]);
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedTransactionId, setSelectedTransactionId] = useState<number | null>(null);
 
   const fetchData = async () => {
     try {
@@ -42,8 +45,6 @@ export default function TransactionList() {
   const handleSave = async () => {
     if (selectedTransaction) {
       try {
-        // console.log("Saving transaction:", selectedTransaction);
-
         await Transection.Update(selectedTransaction.id, {
           type: selectedTransaction.type,
           name: selectedTransaction.name,
@@ -60,6 +61,28 @@ export default function TransactionList() {
         handleCloseModal();
       } catch (error) {
         console.error("Error saving transaction:", error);
+      }
+    }
+  };
+
+  const handleOpenDeleteModal = (id: number) => {
+    setSelectedTransactionId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setSelectedTransactionId(null); // Reset selected transaction ID after closing
+  };
+
+  const handleDelete = async () => {
+    if (selectedTransactionId) {
+      try {
+        await Transection.Delete(selectedTransactionId);
+        setTranData((prevTranData) => prevTranData.filter((tran) => tran.id !== selectedTransactionId));
+        handleCloseDeleteModal(); // Close modal after deleting
+      } catch (error) {
+        console.error("Error deleting transaction:", error);
       }
     }
   };
@@ -97,7 +120,7 @@ export default function TransactionList() {
                 </button>
                 <button
                   className="btn btn-danger btn-sm"
-                  onClick={() => console.log("Delete", transaction.id)}
+                  onClick={() => handleOpenDeleteModal(transaction.id)}
                 >
                   Delete
                 </button>
@@ -190,11 +213,9 @@ export default function TransactionList() {
                     type="date"
                     className="form-control"
                     id="transactionDate"
-                    value={
-                      new Date(selectedTransaction.transactionDate)
-                        .toISOString()
-                        .split("T")[0]
-                    }
+                    value={new Date(selectedTransaction.transactionDate)
+                      .toISOString()
+                      .split("T")[0]}
                     onChange={(e) =>
                       setSelectedTransaction({
                         ...selectedTransaction,
@@ -225,6 +246,14 @@ export default function TransactionList() {
           </div>
         </div>
       )}
+
+      {/* DeleteModal Component */}
+      <DeleteModal
+        showModal={showDeleteModal}
+        handleCloseModal={handleCloseDeleteModal}
+        handleDelete={handleDelete}
+        id={selectedTransactionId ?? 0}
+      />
     </div>
   );
 }
