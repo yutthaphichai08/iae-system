@@ -12,6 +12,7 @@ import type { Metadata } from "next";
 //   variable: "--font-geist-mono",
 //   weight: "100 900",
 // });
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const metadata: Metadata = {
   title: "IAE-System",

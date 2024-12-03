@@ -1,11 +1,11 @@
-// import Image from "next/image";
-// import styles from "./page.module.css";
+import styles from "./page.module.css";
+
+import Transactions from "./components/Transactions";
 
 export default function Home() {
   return (
-    
     <div>
-      Hello World
+      <Transactions />
     </div>
   );
 }

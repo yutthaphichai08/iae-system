@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.3.0",
     "@prisma/client": "^6.0.1",
+    "bootstrap": "^5.3.3",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106"
