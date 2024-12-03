@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Transection from "@/service/api";
@@ -20,9 +20,11 @@ export default function TransactionList() {
   const [tranData, setTranData] = useState<ITransaction[]>([]);
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedTransactionId, setSelectedTransactionId] = useState<number | null>(null);
+  const [selectedTransactionId, setSelectedTransactionId] = useState<
+    number | null
+  >(null);
 
   const fetchData = async () => {
     try {
@@ -79,7 +81,9 @@ export default function TransactionList() {
     if (selectedTransactionId) {
       try {
         await Transection.Delete(selectedTransactionId);
-        setTranData((prevTranData) => prevTranData.filter((tran) => tran.id !== selectedTransactionId));
+        setTranData((prevTranData) =>
+          prevTranData.filter((tran) => tran.id !== selectedTransactionId)
+        );
         handleCloseDeleteModal(); // Close modal after deleting
       } catch (error) {
         console.error("Error deleting transaction:", error);
@@ -93,10 +97,10 @@ export default function TransactionList() {
       <table className="table table-striped table-bordered">
         <thead className="thead-dark">
           <tr>
-            <th>Type</th>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Transaction Date</th>
+            <th>ประเภท</th>
+            <th>รายการ</th>
+            <th>ราคา</th>
+            <th>วันที่</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -108,7 +112,15 @@ export default function TransactionList() {
               <td>{transaction.amount.toFixed(2)}</td>
               <td>
                 {transaction.transactionDate
-                  ? new Date(transaction.transactionDate).toLocaleDateString()
+                  ? (() => {
+                      const date = new Date(transaction.transactionDate);
+                      const day = date.getDate().toString().padStart(2, "0");
+                      const month = (date.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0");
+                      const year = date.getFullYear().toString();
+                      return `${day}/${month}/${year}`;
+                    })()
                   : "Invalid Date"}
               </td>
               <td>
@@ -213,9 +225,11 @@ export default function TransactionList() {
                     type="date"
                     className="form-control"
                     id="transactionDate"
-                    value={new Date(selectedTransaction.transactionDate)
-                      .toISOString()
-                      .split("T")[0]}
+                    value={
+                      new Date(selectedTransaction.transactionDate)
+                        .toISOString()
+                        .split("T")[0]
+                    }
                     onChange={(e) =>
                       setSelectedTransaction({
                         ...selectedTransaction,

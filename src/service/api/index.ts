@@ -17,6 +17,23 @@ const getAll = async () => {
   return res || [];
 };
 
+const getByMonthYear = async (month: string, year: string) => {
+  const url = `http://localhost:3000/api/transactions/report?month=${month}&year=${year}`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  const res = await response.json();
+  return res || {};
+};
+
 // ฟังก์ชันที่ใช้แก้ไขข้อมูล
 const Update = async (id: number, updatedData: { type: string; name: string; amount: number; transactionDate: string }) => {
   const url = `http://localhost:3000/api/${PATH_NAME}/${id}`;
@@ -59,7 +76,8 @@ const Delete = async (id: number) => {
 const Transection = {
   getAll,
   Update, 
-  Delete, 
+  Delete,
+  getByMonthYear
 };
 
 export default Transection;
